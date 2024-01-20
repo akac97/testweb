@@ -3,28 +3,42 @@
 <head>
     <title>Advanced Password Generator</title>
     <style>
+        :root {
+            --font-family: Arial, sans-serif;
+            --background-color: #f0f0f0;
+            --text-align: center;
+            --padding: 50px;
+            --font-size: 24px;
+            --font-weight: bold;
+            --color: #333;
+            --margin-top: 20px;
+            --height: 10px;
+            --width: 100%;
+            --background: #dddddd;
+            --transition: width 0.25s;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            text-align: center;
-            padding: 50px;
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            text-align: var(--text-align);
+            padding: var(--padding);
         }
         #password {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            margin-top: 20px;
+            font-size: var(--font-size);
+            font-weight: var(--font-weight);
+            color: var(--color);
+            margin-top: var(--margin-top);
         }
         #strengthMeter {
-            height: 10px;
-            width: 100%;
-            background: #dddddd;
+            height: var(--height);
+            width: var(--width);
+            background: var(--background);
         }
         #strengthMeter div {
-            height: 10px;
+            height: var(--height);
             width: 0;
             background: #ff0000;
-            transition: width 0.25s;
+            transition: var(--transition);
         }
     </style>
 </head>
@@ -52,13 +66,13 @@
         <div id="strengthMeterFill"></div>
     </div>
     <script>
-        function generatePassword() {
-            var length = document.getElementById('length').value,
+        const generatePassword = () => {
+            const length = document.getElementById('length').value,
                 includeSymbols = document.getElementById('includeSymbols').checked,
                 includeNumbers = document.getElementById('includeNumbers').checked,
                 includeLowercase = document.getElementById('includeLowercase').checked,
-                includeUppercase = document.getElementById('includeUppercase').checked,
-                charset = "",
+                includeUppercase = document.getElementById('includeUppercase').checked;
+            let charset = "",
                 password = "";
             if (includeSymbols) {
                 charset += "!@#$%^&*()_+~`|}{[]:;?><,./-=";
@@ -72,17 +86,17 @@
             if (includeUppercase) {
                 charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             }
-            for (var i = 0, n = charset.length; i < length; ++i) {
+            for (let i = 0, n = charset.length; i < length; ++i) {
                 password += charset.charAt(Math.floor(Math.random() * n));
             }
             document.getElementById("password").innerText = password;
             updateStrengthMeter(password);
         }
 
-        function updateStrengthMeter(password) {
-            var strengthMeter = document.getElementById('strengthMeterFill');
-            var strength = 0;
-            var strengths = {
+        const updateStrengthMeter = (password) => {
+            const strengthMeter = document.getElementById('strengthMeterFill');
+            let strength = 0;
+            const strengths = {
                 0: "Very Weak",
                 1: "Weak",
                 2: "So-so",
@@ -95,16 +109,16 @@
             if (password.match(/[0-9]+/)) strength++;
             if (password.match(/[^a-zA-Z0-9]+/)) strength++;
             strengthMeter.style.width = strength * 20 + '%';
-            strengthMeter.style.backgroundColor = 'hsl(' + strength * 20 + ', 100%, 45%)';
+            strengthMeter.style.backgroundColor = `hsl(${strength * 20}, 100%, 45%)`;
             document.getElementById('password').title = strengths[strength];
         }
 
-        function copyToClipboard() {
-            var passwordText = document.getElementById('password');
+        const copyToClipboard = () => {
+            const passwordText = document.getElementById('password');
             passwordText.select();
             passwordText.setSelectionRange(0, 99999); /* For mobile devices */
             document.execCommand("copy");
-            alert("Copied the password: " + passwordText.value);
+            alert(`Copied the password: ${passwordText.value}`);
         }
     </script>
 </body>
