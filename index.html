@@ -1,110 +1,126 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Advanced Password Generator</title>
+    <title>Password Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             background-color: #f0f0f0;
-            text-align: center;
-            padding: 50px;
         }
         #password {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #strength {
             margin-top: 20px;
-        }
-        #strengthMeter {
-            height: 10px;
-            width: 100%;
-            background: #dddddd;
-        }
-        #strengthMeter div {
-            height: 10px;
-            width: 0;
-            background: #ff0000;
-            transition: width 0.25s;
         }
     </style>
 </head>
 <body>
-    <h2>Advanced Password Generator</h2>
-    <label for="length">Password length:</label>
-    <input type="number" id="length" name="length" min="1" max="64">
-    <br>
-    <label for="includeSymbols">Include Symbols (e.g. @#$%)</label>
-    <input type="checkbox" id="includeSymbols" name="includeSymbols">
-    <br>
-    <label for="includeNumbers">Include Numbers (e.g. 123456)</label>
-    <input type="checkbox" id="includeNumbers" name="includeNumbers">
-    <br>
-    <label for="includeLowercase">Include Lowercase Characters (e.g. abcdef)</label>
-    <input type="checkbox" id="includeLowercase" name="includeLowercase">
-    <br>
-    <label for="includeUppercase">Include Uppercase Characters (e.g. ABCDEF)</label>
-    <input type="checkbox" id="includeUppercase" name="includeUppercase">
-    <br>
-    <button onclick="generatePassword()">Generate Password</button>
-    <p id="password"></p>
-    <button onclick="copyToClipboard()">Copy to Clipboard</button>
-    <div id="strengthMeter">
-        <div id="strengthMeterFill"></div>
+    <div>
+        <div id="password">Click to generate password</div>
+        <label for="length">Password length:</label>
+        <select id="length">
+            <option selected>8</option>
+            <option>9</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+            <option>13</option>
+            <option>14</option>
+            <option>15</option>
+            <option>16</option>
+            <option>17</option>
+            <option>18</option>
+            <option>19</option>
+            <option>20</option>
+            <option>21</option>
+            <option>22</option>
+            <option>23</option>
+            <option>24</option>
+            <option>25</option>
+            <option>26</option>
+            <option>27</option>
+            <option>28</option>
+            <option>29</option>
+            <option>30</option>
+            <option>31</option>
+            <option>32</option>
+        </select>
+        <br>
+        <label for="includeNumbers">Include numbers</label>
+        <input type="checkbox" id="includeNumbers" checked>
+        <br>
+        <label for="includeSymbols">Include symbols</label>
+        <input type="checkbox" id="includeSymbols" checked>
+        <br>
+        <button onclick="generatePassword()">Generate Password</button>
+        <div id="strength"></div>
     </div>
+
     <script>
         function generatePassword() {
-            var length = document.getElementById('length').value,
-                includeSymbols = document.getElementById('includeSymbols').checked,
-                includeNumbers = document.getElementById('includeNumbers').checked,
-                includeLowercase = document.getElementById('includeLowercase').checked,
-                includeUppercase = document.getElementById('includeUppercase').checked,
-                charset = "",
-                password = "";
-            if (includeSymbols) {
-                charset += "!@#$%^&*()_+~`|}{[]:;?><,./-=";
-            }
+            var length = document.getElementById("length").value;
+            var includeNumbers = document.getElementById("includeNumbers").checked;
+            var includeSymbols = document.getElementById("includeSymbols").checked;
+            var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             if (includeNumbers) {
                 charset += "0123456789";
             }
-            if (includeLowercase) {
-                charset += "abcdefghijklmnopqrstuvwxyz";
+            if (includeSymbols) {
+                charset += "!@#$%^&*()_+~`|}{[]:;?><,./-=";
             }
-            if (includeUppercase) {
-                charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            }
+            var password = "";
             for (var i = 0, n = charset.length; i < length; ++i) {
                 password += charset.charAt(Math.floor(Math.random() * n));
             }
             document.getElementById("password").innerText = password;
-            updateStrengthMeter(password);
+            updateStrength(password);
         }
 
-        function updateStrengthMeter(password) {
-            var strengthMeter = document.getElementById('strengthMeterFill');
-            var strength = 0;
-            var strengths = {
-                0: "Very Weak",
-                1: "Weak",
-                2: "So-so",
-                3: "Good",
-                4: "Strong"
+        function updateStrength(password) {
+            var strength = "Weak";
+            var score = 0;
+            if (/[a-z]/.test(password)) {
+                score++;
             }
-            if (password.length > 5) strength++;
-            if (password.match(/[a-z]+/)) strength++;
-            if (password.match(/[A-Z]+/)) strength++;
-            if (password.match(/[0-9]+/)) strength++;
-            if (password.match(/[^a-zA-Z0-9]+/)) strength++;
-            strengthMeter.style.width = strength * 20 + '%';
-            strengthMeter.style.backgroundColor = 'hsl(' + strength * 20 + ', 100%, 45%)';
-            document.getElementById('password').title = strengths[strength];
-        }
-
-        function copyToClipboard() {
-            var passwordText = document.getElementById('password');
-            passwordText.select();
-            passwordText.setSelectionRange(0, 99999); /* For mobile devices */
-            document.execCommand("copy");
-            alert("Copied the password: " + passwordText.value);
+            if (/[A-Z]/.test(password)) {
+                score++;
+            }
+            if (/\d/.test(password)) {
+                score++;
+            }
+            if (/[^a-zA-Z\d]/.test(password)) {
+                score++;
+            }
+            if (password.length >= 8) {
+                score++;
+            }
+            if (password.length > 12) {
+                score++;
+            }
+            if (score > 2) {
+                strength = "Medium";
+            }
+            if (score > 4) {
+                strength = "Strong";
+            }
+            document.getElementById("strength").innerText = "Strength: " + strength;
         }
     </script>
 </body>
